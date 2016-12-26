@@ -1,42 +1,65 @@
 import os
 import sys
 import telebot
-from random import randint
+import random
 
 
 TOKEN = sys.argv[1]
 
 bot = telebot.TeleBot(TOKEN)
 
-def load_stuff():
-	lists = []
-	prefix = os.path.split(sys.argv[0])[0]
-	source_types = ['phrases', 'nouns', 'verbs', 'adjectives', 'adverbs', 'bse', 'bse_start']
-	sources = [os.path.join(prefix, 'resources', x+'.txt') for x in source_types]
-	for source in sources:
-		lists.append([x.replace('\n', '') for x in open(source).readlines()])
-	return lists
+sources = {
+    '**PHRASE**': {
+        'file': 'phrases',
+    },
+    '**NOUN**': {
+        'file': 'nouns',
+    },
+    '**VERB**': {
+        'file': 'verbs',
+    },
+    '**ADJ**': {
+        'file': 'adjectives',
+    },
+    '**ADVERB**': {
+        'file': 'adverbs',
+    },
+    '**BSE**': {
+        'file': 'bse',
+    },
+    '**BSE_START**': {
+        'file': 'bse_start',
+    },
+}
+
+def load_file(f):
+    prefix = os.path.split(sys.argv[0])[0]
+    return [x.replace('\n', '') for x in open(os.path.join(prefix, 'resources', f + '.txt')).readlines()]
 
 @bot.message_handler(commands=['phrase'])
 def buzzwordyphrase(message):
-	stuff = load_stuff()
-	phrases = stuff[0]
-	sub = stuff[1:]
-	chosen_phrase = phrases[randint(0, len(phrases)-1)].split(" ")
-	ret = []
 
-	pattern = ["**NOUN**", "**VERB**", "**ADJ**", "**ADVERB**", "**BSE**", "**BSE_START**"]
+    # Load files
+    for v in sources.values():
+        v['items'] = load_file(v['file'])
 
-	for word in chosen_phrase:
-		for i in range(len(pattern)):
-			word = word.replace(pattern[i], sub[i][randint(0, len(sub[i])-1)])
-		ret.append(word)
+    # Choose initial phrase
+    ret = random.choice(sources['**PHRASE**']['items'])
 
-	ret = ' '.join(ret)
+    # Iterate till there's no shit to replace
+    finished = False
+    while(not finished):
+        finished = True
+        old = ret
+        for k, v in sources.items():
+            ret = ret.replace(k, random.choice(v['items']), 1)
+            if old != ret:
+                finished = False
 
-	bot.reply_to(message, ret)
+    # Return response!
+    bot.reply_to(message, ret)
 
 bot.polling()
 
 while True:
-	pass
+    pass
