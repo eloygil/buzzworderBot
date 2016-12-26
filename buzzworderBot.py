@@ -9,27 +9,13 @@ TOKEN = sys.argv[1]
 bot = telebot.TeleBot(TOKEN)
 
 sources = {
-    '**PHRASE**': {
-        'file': 'phrases',
-    },
-    '**NOUN**': {
-        'file': 'nouns',
-    },
-    '**VERB**': {
-        'file': 'verbs',
-    },
-    '**ADJ**': {
-        'file': 'adjectives',
-    },
-    '**ADVERB**': {
-        'file': 'adverbs',
-    },
-    '**BSE**': {
-        'file': 'bse',
-    },
-    '**BSE_START**': {
-        'file': 'bse_start',
-    },
+    '**PHRASE**': {'file': 'phrases'},
+    '**NOUN**': {'file': 'nouns'},
+    '**VERB**': {'file': 'verbs'},
+    '**ADJ**': {'file': 'adjectives'},
+    '**ADVERB**': {'file': 'adverbs'},
+    '**BSE**': {'file': 'bse'},
+    '**BSE_START**': {'file': 'bse_start'},
 }
 
 def load_file(f):
@@ -42,6 +28,7 @@ def buzzwordyphrase(message):
     # Load files
     for v in sources.values():
         v['items'] = load_file(v['file'])
+        v['blacklist'] = []
 
     # Choose initial phrase
     ret = random.choice(sources['**PHRASE**']['items'])
@@ -52,8 +39,16 @@ def buzzwordyphrase(message):
         finished = True
         old = ret
         for k, v in sources.items():
-            ret = ret.replace(k, random.choice(v['items']), 1)
+            # Try not to repeat words by maintainig a blacklist
+            choices = [i for i in v['items'] if i not in v['blacklist']]
+            if not choices:
+                choices = v['items']
+            chosen = random.choice(choices)
+
+            # Replace and add to blacklist if changed
+            ret = ret.replace(k, chosen, 1)
             if old != ret:
+                v['blacklist'].append(chosen)
                 finished = False
 
     # Return response!
