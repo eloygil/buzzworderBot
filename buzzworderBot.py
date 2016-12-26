@@ -13,8 +13,8 @@ def load_stuff():
 	prefix = os.path.split(sys.argv[0])[0]
 	source_types = ['phrases', 'nouns', 'verbs', 'adjectives', 'adverbs', 'bse', 'bse_start']
 	sources = [os.path.join(prefix, 'resources', x+'.txt') for x in source_types]
-	for i in range(len(sources)):
-		lists.append([x.replace('\n', '') for x in open(sources[i]).readlines()])
+	for source in sources:
+		lists.append([x.replace('\n', '') for x in open(source).readlines()])
 	return lists
 
 @bot.message_handler(commands=['phrase'])
