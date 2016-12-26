@@ -10,30 +10,31 @@ bot = telebot.TeleBot(TOKEN)
 
 sources = {
     '**PHRASE**': {
-        'file': 'phrases.txt',
+        'file': 'phrases',
     },
     '**NOUN**': {
-        'file': 'nouns.txt',
+        'file': 'nouns',
     },
     '**VERB**': {
-        'file': 'verbs.txt',
+        'file': 'verbs',
     },
     '**ADJ**': {
-        'file': 'adjectives.txt',
+        'file': 'adjectives',
     },
     '**ADVERB**': {
-        'file': 'adverbs.txt',
+        'file': 'adverbs',
     },
     '**BSE**': {
-        'file': 'bse.txt',
+        'file': 'bse',
     },
     '**BSE_START**': {
-        'file': 'bse_start.txt',
+        'file': 'bse_start',
     },
 }
 
 def load_file(f):
-    return [x.replace('\n', '') for x in open(os.path.join('resources', f)).readlines()]
+    prefix = os.path.split(sys.argv[0])[0]
+    return [x.replace('\n', '') for x in open(os.path.join(prefix, 'resources', f + '.txt')).readlines()]
 
 @bot.message_handler(commands=['phrase'])
 def buzzwordyphrase(message):
