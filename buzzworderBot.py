@@ -9,11 +9,11 @@ TOKEN = sys.argv[1]
 bot = telebot.TeleBot(TOKEN)
 
 def load_stuff():
-	lists = [[], [], [], [], [], [], []]
+	lists = []
 	sources = ['phrases.txt', 'nouns.txt', 'verbs.txt', 'adjectives.txt', 'adverbs.txt', 'bse.txt', 'bse_start.txt']
 	sources = [os.path.join('resources', x) for x in sources]
-	for i in range(len(lists)):
-		lists[i] = [x.replace('\n', '') for x in open(sources[i]).readlines()]
+	for i in range(len(sources)):
+		lists.append([x.replace('\n', '') for x in open(sources[i]).readlines()])
 	return lists
 
 @bot.message_handler(commands=['phrase'])
