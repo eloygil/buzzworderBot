@@ -10,15 +10,15 @@ bot = telebot.TeleBot(TOKEN)
 
 def load_stuff():
 	lists = []
-	sources = ['phrases.txt', 'nouns.txt', 'verbs.txt', 'adjectives.txt', 'adverbs.txt', 'bse.txt', 'bse_start.txt']
-	sources = [os.path.join('resources', x) for x in sources]
+	prefix = os.path.split(sys.argv[0])[0]
+	source_types = ['phrases', 'nouns', 'verbs', 'adjectives', 'adverbs', 'bse', 'bse_start']
+	sources = [os.path.join(prefix, 'resources', x+'.txt') for x in source_types]
 	for i in range(len(sources)):
 		lists.append([x.replace('\n', '') for x in open(sources[i]).readlines()])
 	return lists
 
 @bot.message_handler(commands=['phrase'])
 def buzzwordyphrase(message):
-
 	stuff = load_stuff()
 	phrases = stuff[0]
 	sub = stuff[1:]
