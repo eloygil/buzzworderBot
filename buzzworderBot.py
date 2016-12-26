@@ -9,14 +9,7 @@ TOKEN = sys.argv[1]
 bot = telebot.TeleBot(TOKEN)
 
 def load_stuff():
-	phrases = []
-	nouns = []
-	verbs = []
-	adjs = []
-	advs = []
-	bse = []
-	bse_start = []
-	lists = [phrases, nouns, verbs, adjs, advs, bse, bse_start]
+	lists = [[], [], [], [], [], [], []]
 	sources = ['phrases.txt', 'nouns.txt', 'verbs.txt', 'adjectives.txt', 'adverbs.txt', 'bse.txt', 'bse_start.txt']
 	sources = [os.path.join('resources', x) for x in sources]
 	for i in range(len(lists)):
