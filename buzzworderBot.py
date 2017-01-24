@@ -2,6 +2,7 @@ import os
 import sys
 import telebot
 import random
+from telebot import types
 
 
 TOKEN = sys.argv[1]
@@ -22,8 +23,7 @@ def load_file(f):
     prefix = os.path.split(sys.argv[0])[0]
     return [x.replace('\n', '') for x in open(os.path.join(prefix, 'resources', f + '.txt')).readlines()]
 
-@bot.message_handler(commands=['phrase'])
-def buzzwordyphrase(message):
+def buzzwordyphrase():
 
     # Load files
     for v in sources.values():
@@ -52,7 +52,24 @@ def buzzwordyphrase(message):
                 finished = False
 
     # Return response!
-    bot.reply_to(message, ret)
+    return ret
+
+@bot.message_handler(commands=['phrase'])
+def replywithphrase(message):
+
+    # Return response!
+    bot.reply_to(message, buzzwordyphrase())
+
+@bot.inline_handler(func=lambda q: True)
+def inline_phrase(inline_query):
+    ret = buzzwordyphrase()
+    bot.answer_inline_query(inline_query.id, [
+        types.InlineQueryResultArticle(
+            ''.join([random.choice('0123456789abcdef') for _ in range(16)]),
+            'Send a phrase',
+            types.InputTextMessageContent(ret)
+        )
+    ])
 
 bot.polling()
 
