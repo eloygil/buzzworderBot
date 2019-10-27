@@ -39,7 +39,7 @@ def buzzwordyphrase():
         finished = True
         old = ret
         for k, v in sources.items():
-            # Try not to repeat words by maintainig a blacklist
+            # Try not to repeat words by maintaining a blacklist
             choices = [i for i in v['items'] if i not in v['blacklist']]
             if not choices:
                 choices = v['items']
